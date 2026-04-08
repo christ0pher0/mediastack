@@ -1,1 +1,13 @@
 .env
+audiobookshelf/
+komga/
+lidarr/
+mylar/
+overseerr/
+prowlarr/
+radarr/
+romm/
+sabnzbd/
+sonarr/
+wireguard/
+downloads/
