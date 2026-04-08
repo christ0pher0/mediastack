@@ -1,0 +1,223 @@
+services:
+
+  # ============================================================
+  # VPN - All download traffic routes through Surfshark
+  # ============================================================
+  vpn:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: vpn
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - LAN_NETWORK=192.168.1.0/24
+    volumes:
+      - /home/cos/mediastack/wireguard:/config
+      - /lib/modules:/lib/modules
+    ports:
+      - 8080:8080
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+
+  # ============================================================
+  # SABnzbd - Usenet downloader (routes through VPN)
+  # ============================================================
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - DOCKER_MODS=linuxserver/mods:sabnzbd-ipv4
+    volumes:
+      - /home/cos/mediastack/sabnzbd/config:/config
+      - /mnt/plex/downloads:/downloads
+    ports: 
+      - 8090:8080
+    restart: unless-stopped
+
+  # ============================================================
+  # Prowlarr - Indexer manager (feeds Sonarr/Radarr/Lidarr/Readarr)
+  # ============================================================
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /home/cos/mediastack/prowlarr/config:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+
+  # ============================================================
+  # Sonarr - TV Show manager
+  # ============================================================
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /home/cos/mediastack/sonarr/config:/config
+      - /mnt/plex/TV:/tv
+      - /mnt/plex/downloads:/downloads
+    ports:
+      - 8989:8989
+    restart: unless-stopped
+
+  # ============================================================
+  # Radarr - Movie manager
+  # ============================================================
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /home/cos/mediastack/radarr/config:/config
+      - /mnt/plex/Movies:/movies
+      - /mnt/plex/downloads:/downloads
+    ports:
+      - 7878:7878
+    restart: unless-stopped
+
+  # ============================================================
+  # Lidarr - Music manager
+  # ============================================================
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /home/cos/mediastack/lidarr/config:/config
+      - /mnt/plex/Music420:/music
+      - /mnt/plex/downloads:/downloads
+    ports:
+      - 8686:8686
+    restart: unless-stopped
+
+# ============================================================
+  # Audiobookshelf - Audiobook and Podcast server
+  # ============================================================
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /home/cos/mediastack/audiobookshelf/config:/config
+      - /home/cos/mediastack/audiobookshelf/metadata:/metadata
+      - /mnt/plex/AudioBooksPlex:/audiobooks
+    ports:
+      - 13378:80
+    restart: unless-stopped
+        
+  # ============================================================
+  # Mylarr - Request portal for Comics
+  # ============================================================
+  mylar:
+    image: lscr.io/linuxserver/mylar3:latest
+    container_name: mylar
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /home/cos/mediastack/mylar/config:/config
+      - /mnt/plex/downloads:/downloads
+      - /mnt/plex/Comics:/comics
+    ports:
+      - 8091:8090
+    restart: unless-stopped
+
+  # ============================================================
+  # Komga - Comics Reader/Library Organizer
+  # ============================================================
+  komga:
+    image: gotson/komga:latest
+    container_name: komga
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /home/cos/mediastack/komga/config:/config
+      - /mnt/plex/Comics:/comics
+      - /mnt/plex/Reading420/Comics:/reading420
+    ports:
+      - 8085:8080
+    restart: unless-stopped
+      
+  # ============================================================
+  # Overseerr - Request portal for Movies and TV
+  # ============================================================
+  overseerr:
+    image: lscr.io/linuxserver/overseerr:latest
+    container_name: overseerr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /home/cos/mediastack/overseerr/config:/config
+    ports:
+      - 5055:5055
+    restart: unless-stopped
+
+  # ============================================================
+  # Romm - ROM Manager
+  # ============================================================
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=romm_root
+      - MYSQL_DATABASE=romm
+      - MYSQL_USER=romm
+      - MYSQL_PASSWORD=romm_pass
+    volumes:
+      - /home/cos/mediastack/romm/mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  romm:
+    image: rommapp/romm:latest
+    container_name: romm
+    depends_on:
+      - mariadb
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - DB_HOST=mariadb
+      - DB_NAME=romm
+      - DB_USER=romm
+      - DB_PASSWD=romm_pass
+      - ROMM_AUTH_SECRET_KEY=7d4b3142d6699d0c6013ac5095abe4ab8edf872ed5390ed370a3558b74e07902
+    volumes:
+      - /home/cos/mediastack/romm/config:/config
+      - /mnt/plex/ROMs:/romm/library/roms
+    ports:
+      - 8998:8080
+    restart: unless-stopped
