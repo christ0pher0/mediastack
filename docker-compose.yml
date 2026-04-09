@@ -151,7 +151,9 @@ services:
   # Komga - Comics Reader/Library Organizer
   # ============================================================
   komga:
-    image: gotson/komga:latest
+    build:
+      context: ./komga
+      dockerfile: Dockerfile
     container_name: komga
     environment:
       - PUID=1000
@@ -160,25 +162,29 @@ services:
     volumes:
       - /home/cos/mediastack/komga/config:/config
       - /mnt/plex/Comics:/comics
-      - /mnt/plex/Reading420/Comics:/reading420
     ports:
-      - 8085:8080
-    restart: unless-stopped
-      
+      - 8085:25600
+    restart: unless-stopped 
+
   # ============================================================
-  # Overseerr - Request portal for Movies and TV
+  # Seerr - Request portal for Movies and TV
   # ============================================================
-  overseerr:
-    image: lscr.io/linuxserver/overseerr:latest
-    container_name: overseerr
+  seerr:
+    image: ghcr.io/seerr-team/seerr:latest
+    init: true
+    container_name: seerr
     environment:
-      - PUID=1000
-      - PGID=1000
       - TZ=America/New_York
     volumes:
-      - /home/cos/mediastack/overseerr/config:/config
+      - /home/cos/mediastack/seerr/config:/app/config
     ports:
       - 5055:5055
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:5055/api/v1/settings/public || exit 1
+      start_period: 20s
+      timeout: 3s
+      interval: 15s
+      retries: 3
     restart: unless-stopped
 
   # ============================================================
@@ -215,9 +221,16 @@ services:
       - DB_USER=romm
       - DB_PASSWD=romm_pass
       - ROMM_AUTH_SECRET_KEY=7d4b3142d6699d0c6013ac5095abe4ab8edf872ed5390ed370a3558b74e07902
+      - HASHEOUS_API_ENABLED=true
+      - IGDB_CLIENT_ID=okfr8ik50pia01piil9vf4ksd7wwto
+      - IGDB_CLIENT_SECRET=prucib16njzs5cqa0ckw9w6ggzxnfe
+      - SCREENSCRAPER_USER=mouserr
+      - SCREENSCRAPER_PASSWORD=tourdefrance
     volumes:
       - /home/cos/mediastack/romm/config:/config
+      - /home/cos/mediastack/romm/config/config.yml:/romm/config.yml
       - /mnt/plex/ROMs:/romm/library/roms
+      - /mnt/plex/ROMs/bios:/romm/library/bios
     ports:
       - 8998:8080
     restart: unless-stopped
