@@ -39,6 +39,25 @@ services:
       - 8090:8080
     restart: unless-stopped
   # ============================================================
+  # qBittorrent - Torrent downloader
+  # ============================================================
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - WEBUI_PORT=8082
+    volumes:
+      - /home/cos/mediastack/qbittorrent/config:/config
+      - /mnt/plex/downloads:/downloads
+    ports:
+      - 8082:8082
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+  # ============================================================
   # Prowlarr - Indexer manager (feeds Sonarr/Radarr/Lidarr/Readarr)
   # ============================================================
   prowlarr:
@@ -142,9 +161,7 @@ services:
   # Komga - Comics Reader/Library Organizer
   # ============================================================
   komga:
-    build:
-      context: ./komga
-      dockerfile: Dockerfile
+    image: gotson/komga:latest
     container_name: komga
     environment:
       - PUID=1000
@@ -234,7 +251,6 @@ services:
       - PGID=1000
       - TZ=America/New_York
       - VERSION=docker
-#      - PLEX_CLAIM=claim-sh7HhPXr9xYgUHXkexwa
     volumes:
       - /home/cos/mediastack/plex/config:/config
       - /mnt/plex/Movies:/movies
