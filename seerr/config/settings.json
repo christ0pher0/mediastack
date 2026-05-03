@@ -1,5 +1,6 @@
 {
  "clientId": "8468b4f1-a066-4969-8cba-5e123657ede2",
+ "sessionSecret": "b46ca8dd8933b239f7af276a5f2527f3f1f3e809de2317cc491023b92dbcd79b",
  "vapidPrivate": "h8uBWc-D9rikxsMUSnp7oQrvqmBrs3DYyBRGX99ltTE",
  "vapidPublic": "BDCaY100C_uSlur0csWDEPQidokLgzaCj7mDwG-DWbsuBL-c52eTOFNgWTvahw034zUN4lWQYkNejZ4uqv3D6nE",
  "main": {
@@ -20,6 +21,8 @@
   "discoverRegion": "",
   "streamingRegion": "",
   "originalLanguage": "",
+  "blocklistRegion": "",
+  "blocklistLanguage": "",
   "blocklistedTags": "",
   "blocklistedTagsLimit": 50,
   "mediaServerType": 1,
@@ -39,14 +42,14 @@
     "name": "Movies",
     "enabled": true,
     "type": "movie",
-    "lastScan": 1776294000023
+    "lastScan": 1777253131126
    },
    {
     "id": "2",
     "name": "TV Shows",
     "enabled": true,
     "type": "show",
-    "lastScan": 1776294000057
+    "lastScan": 1777253146441
    }
   ],
   "machineId": "43535f523ea43a05af74e8c8978990bbebbc7358"
@@ -93,7 +96,7 @@
    "name": "stack_sonarr",
    "hostname": "192.168.1.36",
    "port": 8989,
-   "apiKey": "614143f3fb1b4921a210380cb21219f7",
+   "apiKey": "1072dffeb13a411a9febba05daae1750",
    "useSsl": false,
    "activeProfileId": 4,
    "activeProfileName": "HD-1080p",
@@ -206,7 +209,8 @@
     "types": 0,
     "options": {
      "url": "",
-     "topic": ""
+     "topic": "",
+     "priority": 3
     }
    }
   }

@@ -1,0 +1,48 @@
+services:
+  # ============================================================
+  # Gluetun - VPN client (Surfshark via OpenVPN)
+  # All qBittorrent traffic routes through this container
+  # ============================================================
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - VPN_SERVICE_PROVIDER=surfshark
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${SURFSHARK_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=10.14.0.2/16
+      - SERVER_COUNTRIES=United States
+      - TZ=America/New_York
+      # Allows LAN access to qBittorrent WebUI through Gluetun
+      - FIREWALL_OUTBOUND_SUBNETS=192.168.1.0/24
+    ports:
+      # qBittorrent WebUI
+      - 8082:8082
+      # qBittorrent torrenting port
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped
+
+  # ============================================================
+  # qBittorrent - Torrent client (routes through Gluetun VPN)
+  # ============================================================
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    # This is the key - qBittorrent uses Gluetun's network stack
+    network_mode: service:gluetun
+    depends_on:
+      - gluetun
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+      - WEBUI_PORT=8082
+    volumes:
+      - /home/cos/mediastack/qbittorrent/config:/config
+      - /mnt/plex/downloads:/downloads
+    restart: unless-stopped

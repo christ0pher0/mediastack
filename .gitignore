@@ -20,3 +20,8 @@ wireguard/
 *.sqlite3-wal
 romm/
 overseerr/
+api_keys.env
+plex/
+qbittorrent/
+homepage/
+unpackerr/
