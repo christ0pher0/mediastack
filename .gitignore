@@ -27,3 +27,5 @@ homepage/
 unpackerr/
 api_keys.env
 api_keys.env
+backups/
+docker-compose.yml.bak2
