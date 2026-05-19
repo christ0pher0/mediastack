@@ -1,0 +1,112 @@
+plex:
+  url: http://192.168.1.36:32400
+  token: -wk3GAoNyQFsc-5fdEKm
+  timeout: 60
+  clean_bundles: false
+  empty_trash: false
+  missing_only_released: false
+  verify_ssl: true
+  db_cache:
+  optimize: false
+
+tmdb:
+  apikey: cf57384360d7522263417708489aee88
+  language: en
+  cache_expiration: 60
+  region:
+
+trakt:
+  client_id: c47c11e35c98731fd0cfc8f7a220e82ca7fada1c55ee483ff144708ec8d827ab
+  client_secret: bbfe2cee2b618e64b41411bec5910731905e4fb75b6042220863e5b7bc4838fb
+  access_token: a6daa2874d49764520f6ee01df08df57a40712359af61dffb713e1e119c17976
+  refresh_token: 625001293d1188199f231c4b76ab2410349295f1bd4e69e3dd010aa2a71543ed
+  pin:
+  force_refresh:
+
+mdblist:
+  apikey: kk9vfbw3gpiylda6jr0acb2m8
+  cache_expiration: 60
+
+libraries:
+  Movies:
+    collection_files:
+    - default: basic
+    - default: franchise
+    - default: universe
+    - default: genre
+    - default: rating
+    operations:
+      assets_for_all: true
+
+  TV Shows:
+    collection_files:
+    - default: basic
+    - default: franchise
+    - default: universe
+    - default: genre
+    - default: rating
+    operations:
+      assets_for_all: true
+
+  Audiobooks:
+    collection_files:
+    - default: basic
+    - default: genre
+    - default: rating
+    operations:
+      assets_for_all: true
+
+  Music:
+    collection_files:
+    - default: basic
+    - default: genre
+    - default: decade
+    - default: rating
+    - default: record_label
+    operations:
+      assets_for_all: true
+
+settings:
+  run_order:
+  - operations
+  - metadata
+  - collections
+  - overlays
+  cache: true
+  cache_expiration: 60
+  asset_depth: 0
+  create_asset_folders: false
+  prioritize_assets: false
+  dimensional_asset_rename: false
+  download_url_assets: false
+  show_missing_assets: true
+  show_missing_season_assets: false
+  show_missing_episode_assets: false
+  show_asset_not_needed: true
+  sync_mode: append
+  default_collection_order:
+  minimum_items: 1
+  item_refresh_delay: 0
+  delete_below_minimum: false
+  delete_not_scheduled: false
+  run_again_delay: 0
+  missing_only_released: false
+  only_filter_missing: false
+  show_unmanaged: true
+  show_unconfigured: true
+  show_filtered: false
+  show_unfiltered: false
+  show_options: false
+  show_missing: true
+  save_report: false
+  tvdb_language: default
+  ignore_ids:
+  ignore_imdb_ids:
+  playlist_sync_to_users:
+  playlist_exclude_users:
+  playlist_report: true
+  custom_repo:
+  overlay_artwork_filetype: webp_lossy
+  overlay_artwork_quality: 90
+  asset_directory: config/assets
+  asset_folders: true
